@@ -1,0 +1,21 @@
+{
+    "name": "u/project",
+    "description": "Tiny MVC",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fg-yarullin",
+            "email": "failneke@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+
+        "classmap": ["app/core", "app/controllers", "app/models"]
+    }
+
+}
