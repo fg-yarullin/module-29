@@ -21,7 +21,7 @@
  * > Backup
  * > и другие
  */
-
+require_once __DIR__ . '/../vendor/autoload.php';
 // require_once __DIR__ . '/core/route.php';
 include 'app_routes.php';
 include __DIR__ . '/../config/db_connection.php';

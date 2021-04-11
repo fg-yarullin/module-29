@@ -3,7 +3,7 @@
 class Controller_Register extends Controller {
 
     private $usersTable;
-    private $data = [];
+    private $data = ['title' => 'Account Registration'];
 
     // public function __construct($stdClass) {
     // // public function __construct() {

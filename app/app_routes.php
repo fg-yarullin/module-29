@@ -66,5 +66,13 @@ function getRoutes():array {
             ],
             'model' => 'stdClass'
         ],
+
+        'vk-auth' => [
+            'GET' => [
+                'controller' => 'Controller_Login',
+                'action' => 'vkOauth'
+            ],
+            'model' => 'stdClass'
+        ]
     ];
 }

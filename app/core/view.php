@@ -25,6 +25,8 @@ class View {
 
         $isLoggedIn = !!$authentication->isLoggedIn() ? $authentication->isLoggedIn() : false;
 
+        $userRole = $isLoggedIn ? $authentication->getRole() : null;
+
         ob_start();
         
         include __DIR__ . '/../views/templates/' . $content_view;

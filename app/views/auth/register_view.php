@@ -1,4 +1,4 @@
-<?php extract($data);?>
+<?php extract($data); ?>
 
 <?php if (!empty($errors)) : ?>
     <div class="alert alert-danger mx-5 px-5 py-3">
@@ -32,7 +32,7 @@
                     <input
                         class="form-control mb-2"
                         id="email" type="text" name="user[email]"
-                        value="<?=$user['email'] ?? ''?>"
+                        value="<?=$user['email'] ?? $_SESSION['username'] ?? ''?>"
                         required autocomplete="email"   
                     >
                     <label for="password">Your password</label>

@@ -1,4 +1,4 @@
-<?php extract($data)?>
+<?php extract($data); ?>
 <div class="row justify-content-center pt-5 pb-3 m-0">
     <div class="col-md-8">
         <div class="card-group">
@@ -56,8 +56,8 @@
                                 </button>
                             </div>
                             <div class="text-right ml-5">
-                                <a class="btn btn-outline-secondary" href="/user/vk">
-                                    Войти через ВК
+                                <a class="btn btn-outline-secondary" href="<?=$vkOauth?>">
+                                    Войти через ВКонтакте
                                 </a>
                             </div>
                             <!-- <div class="text-right ml-5">

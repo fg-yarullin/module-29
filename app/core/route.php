@@ -24,6 +24,12 @@
         // получаем запрос и метод запроса
         // $route = ltrim($_SERVER['REQUEST_URI'], '/') != '' ? ltrim($_SERVER['REQUEST_URI'], '/') : 'home';
         $route = trim($_SERVER['REQUEST_URI'], '/');
+
+        $isVkOauth = preg_match("/vk-auth.code=/", $route);
+        if ($isVkOauth) {
+            $route = 'vk-auth';
+        }
+
         
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -37,7 +43,7 @@
         } else {
             // var_dump($route);
             // var_dump($method);
-            
+            // var_dump($_SERVER);die('1');
             Route::ErrorPage404();
         }
 
@@ -54,6 +60,7 @@
             // var_dump($route);
             // var_dump($controller_name);
             // var_dump($action_name);
+            // var_dump($_SERVER);die('2');
             Route::ErrorPage404();
         }
     }

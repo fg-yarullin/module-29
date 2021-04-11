@@ -11,48 +11,73 @@ class Controller_Login extends Controller {
     //     $this->authentication = new Authentication($usersTable, 'email', 'password');
     // }
 
-    function loginForm() {
+    public function setLoginFormData() {
+        $vk = new Model_Vk();
+
         $this->generateToken(); // CSRF-token
         
-        $data = [
+        return [
             "title" => 'Log In',
             "token" => $this->token,
+            "vkOauth" => $vk->getRequest() // $this->vkouath()
         ];
+    }
+
+    function loginForm() {
+
+        // $vk = new Model_Vk();
+
+        // $this->generateToken(); // CSRF-token
         
-        $this->view->generate('/../auth/login_view.php', 'template_view.php',  $data);
+        // $data = [
+        //     "title" => 'Log In',
+        //     "token" => $this->token,
+        //     "vkOauth" => $vk->getRequest() // $this->vkouath()
+        // ];
+        
+        $this->view->generate('/../auth/login_view.php', 'template_view.php',  $this->setLoginFormData());
     }
 
     public function processLogin() {
         // var_dump($_SESSION); die('SESSION');
         $usersTable = new DatabaseTable(get_connection(), 'user', 'id');
-        $this->authentication = new Authentication($usersTable, 'email', 'password');
+        $auth = new Authentication($usersTable, 'email', 'password');
         // var_dump($this->authentication); exit();
-        if ($this->authentication->login($_POST['email'], $_POST['password'])) {
+        if ($auth->login($_POST['email'], $_POST['password'])) {
+            // $this->view->generate('/../auth/loginsuccess_view.php', 'template_view.php', $auth);
             header('location: /login/success');
+    
         } else {
-            $this->generateToken(); // CSRF-token
-            $data = [
-                'title' => 'Log In',
-                // 'isLoggedIn' => !!$this->authentication->isLoggedIn() ? $this->authentication->isLoggedIn() : false,
-                'error' => 'Invalid username or password.',
-                'token' => $this->token
-            ];
-            $this->view->generate('/../auth/login_view.php', 'template_view.php', $data);
+            // $this->generateToken(); // CSRF-token
+            // $data = [
+            //     'title' => 'Log In',
+            //     // 'isLoggedIn' => !!$this->authentication->isLoggedIn() ? $this->authentication->isLoggedIn() : false,
+            //     'error' => 'Invalid username or password.',
+            //     'token' => $this->token
+            // ];
+            $data = $this->setLoginFormData();
+            $data['error'] = 'Invalid username or password.';
+            $this->view->generate('/../auth/login_view.php',
+                'template_view.php', $data);
         }
     }
 
     public function success() {
-        $title = 'Login Successful';
-        $this->view->generate('/../auth/loginsuccess_view.php', 'template_view.php', $title);
-        // header('location: /login/success');
+        $usersTable = new DatabaseTable(get_connection(), 'user', 'id');
+        $auth = new Authentication($usersTable, 'email', 'password');
+        if ($auth->isLoggedIn()) {
+            $title = 'Login Successful';
+            $this->view->generate('/../auth/loginsuccess_view.php',
+                'template_view.php', $title);
+        } else {
+            $this->error();
+        }
     }
 
     public function error() {
-        return [
-            'template' => 'loginerror.html.php',
-            'title' => 'You are not logged in',
-            'token' => '1'
-        ];
+        $title = "You are not logged in";
+        $this->view->generate('/../auth/error_view.php',
+            'template_view.php', $title);
     }
 
     public function logout() {
@@ -69,5 +94,30 @@ class Controller_Login extends Controller {
             session_start();
         }
         $_SESSION["token"] = $this->token;
+    }
+
+    public function vkOauth() {
+        
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        $vk = new Model_Vk();
+        extract($vk->getVkAuthInfo());
+
+        $_SESSION['vk_auth'] = true;
+        $_SESSION['token'] = $token;
+        $this->token = $token;
+        $_SESSION['username'] = $email;
+
+        $usersTable = new DatabaseTable(get_connection(), 'user', 'id');
+        $authentication = new Authentication($usersTable, 'email', 'password');
+        if ($authentication->vkLogin($_SESSION['vk_auth'], $email)) {
+            header('location: /login/success');
+        } else {
+            $data = $this->setLoginFormData();
+            $data['error'] = 'VK-auth: You have not registered yet.';
+            header('location: /user/register');
+        }
     }
 }

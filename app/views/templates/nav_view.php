@@ -8,7 +8,10 @@
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item">
                 <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>            
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/success">Successful</a>
+            </li>        
         </ul>
 
         <ul class="navbar-nav ml-auto mr-3">

@@ -13,9 +13,12 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/"
+            
         },
 
         "classmap": ["app/core", "app/controllers", "app/models"]
+    },
+    "require": {
+        "monolog/monolog": "^2.2"
     }
-
 }
