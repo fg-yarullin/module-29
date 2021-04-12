@@ -1,4 +1,4 @@
-vendor/
-node_modules/
-logs/
-*.log
+vendor/**
+node_modules/**
+logs/**
+**/*.log
