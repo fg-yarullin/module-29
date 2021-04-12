@@ -1,7 +1,7 @@
 <?php
 
 class Controller_Login extends Controller {
-    private $authentication;
+    // private $authentication;
     private $token = '';
 
     // public function __construct() {
@@ -13,9 +13,7 @@ class Controller_Login extends Controller {
 
     public function setLoginFormData() {
         $vk = new Model_Vk();
-
-        $this->generateToken(); // CSRF-token
-        
+        $this->generateToken(); // CSRF-token       
         return [
             "title" => 'Log In',
             "token" => $this->token,
@@ -23,38 +21,28 @@ class Controller_Login extends Controller {
         ];
     }
 
-    function loginForm() {
-
-        // $vk = new Model_Vk();
-
-        // $this->generateToken(); // CSRF-token
-        
-        // $data = [
-        //     "title" => 'Log In',
-        //     "token" => $this->token,
-        //     "vkOauth" => $vk->getRequest() // $this->vkouath()
-        // ];
-        
-        $this->view->generate('/../auth/login_view.php', 'template_view.php',  $this->setLoginFormData());
+    function loginForm() {      
+        $this->view->generate('/../auth/login_view.php', 
+            'template_view.php',  $this->setLoginFormData());
     }
 
     public function processLogin() {
-        // var_dump($_SESSION); die('SESSION');
+
         $usersTable = new DatabaseTable(get_connection(), 'user', 'id');
         $auth = new Authentication($usersTable, 'email', 'password');
         // var_dump($this->authentication); exit();
         if ($auth->login($_POST['email'], $_POST['password'])) {
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
+
+            if (isset($_SESSION['vk_auth'])) {
+                $_SESSION['vk_auth'] = false;
+            }
             // $this->view->generate('/../auth/loginsuccess_view.php', 'template_view.php', $auth);
             header('location: /login/success');
     
         } else {
-            // $this->generateToken(); // CSRF-token
-            // $data = [
-            //     'title' => 'Log In',
-            //     // 'isLoggedIn' => !!$this->authentication->isLoggedIn() ? $this->authentication->isLoggedIn() : false,
-            //     'error' => 'Invalid username or password.',
-            //     'token' => $this->token
-            // ];
             $data = $this->setLoginFormData();
             $data['error'] = 'Invalid username or password.';
             $this->view->generate('/../auth/login_view.php',
@@ -81,11 +69,14 @@ class Controller_Login extends Controller {
     }
 
     public function logout() {
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         $_SESSION = [];
         session_destroy ();
         $title = 'Yo have been logged out';
-        $this->view->generate('/../auth/logout_view.php', 'template_view.php', $title);
+        $this->view->generate('/../auth/logout_view.php',
+            'template_view.php', $title);
     }
 
     public function generateToken() {
